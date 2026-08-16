@@ -322,6 +322,8 @@ export default function Carousel() {
     let pointerTravel = 0; // tells a click from a drag
     let travelX = 0;
     let travelY = 0;
+    const blockedTouchPointers = new Set();
+    let suppressTouchClick = false;
 
     const pointerAngle = (e) => {
       const dx = e.clientX - bounds.left - ringCentre.x;
@@ -420,7 +422,10 @@ export default function Carousel() {
     };
 
     const onWheel = (e) => {
-      if (!interactive) return;
+      if (!interactive || performance.now() < touchReadyAt) {
+        e.preventDefault();
+        return;
+      }
       e.preventDefault();
       // Trackpads send horizontal deltas too; take whichever dominates.
       const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
@@ -432,8 +437,21 @@ export default function Carousel() {
     };
 
     const onPointerDown = (e) => {
-      if (!interactive) return;
-      if (e.pointerType === "touch" && performance.now() < touchReadyAt) return;
+      const isTouch = e.pointerType === "touch";
+      if (
+        !interactive ||
+        (isTouch &&
+          (blockedTouchPointers.has(e.pointerId) ||
+            performance.now() < touchReadyAt))
+      ) {
+        if (isTouch) {
+          blockedTouchPointers.add(e.pointerId);
+          suppressTouchClick = true;
+          e.preventDefault();
+        }
+        return;
+      }
+      suppressTouchClick = false;
       pointerTravel = 0;
       travelX = e.clientX;
       travelY = e.clientY;
@@ -452,8 +470,20 @@ export default function Carousel() {
     };
 
     const onPointerMove = (e) => {
-      if (!interactive) return;
-      if (e.pointerType === "touch" && performance.now() < touchReadyAt) return;
+      const isTouch = e.pointerType === "touch";
+      if (
+        !interactive ||
+        (isTouch &&
+          (blockedTouchPointers.has(e.pointerId) ||
+            performance.now() < touchReadyAt))
+      ) {
+        if (isTouch) {
+          blockedTouchPointers.add(e.pointerId);
+          suppressTouchClick = true;
+          e.preventDefault();
+        }
+        return;
+      }
       trackPointer(e);
 
       // From coordinates, not movementX/Y: those are zero for touch in Safari,
@@ -480,6 +510,12 @@ export default function Carousel() {
     };
 
     const onPointerUp = (e) => {
+      if (e.pointerType === "touch" && blockedTouchPointers.has(e.pointerId)) {
+        blockedTouchPointers.delete(e.pointerId);
+        suppressTouchClick = true;
+        e.preventDefault();
+        return;
+      }
       if (!interactive || !dragging) return;
       // Releasing the capture fires a leave at the container even though the
       // cursor never went anywhere, so re-track before anything else.
@@ -499,6 +535,10 @@ export default function Carousel() {
     // `over` comes from the same hit test that decides the tag, so a click
     // only ever lands on the card the tag was offering.
     const onClick = () => {
+      if (suppressTouchClick) {
+        suppressTouchClick = false;
+        return;
+      }
       if (!interactive || pointerTravel >= 5 || over < 0) return;
       pick(over);
     };
@@ -1029,9 +1069,9 @@ export default function Carousel() {
           interactive = true;
           if (!startupTouchGateSet) {
             // The first photo has now finished its entry and come to rest.
-            // Give the mobile browser three quiet seconds before accepting
+            // Give the mobile browser five quiet seconds before accepting
             // touch input so the scroll handoff cannot compete with settling.
-            touchReadyAt = performance.now() + 3000;
+            touchReadyAt = performance.now() + 5000;
             startupTouchGateSet = true;
           }
         },
@@ -1154,6 +1194,7 @@ export default function Carousel() {
     let tl = null;
     const replay = () => {
       clearTimeout(touchFadeTimer);
+      blockedTouchPointers.clear();
       tl?.kill();
       tl = build();
     };
