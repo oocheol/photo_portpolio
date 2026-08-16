@@ -61,6 +61,19 @@ export default function Carousel() {
     let disposed = false;
 
     const params = defaultParams();
+    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) {
+      params.launchTime = 0.3;
+      params.spreadTime = 0.45;
+      params.spinTime = 0.45;
+      params.moveTime = 0.35;
+      params.textTime = 0.25;
+      params.textOutTime = 0.2;
+      params.nameMorphTime = 0.25;
+      params.pickTime = 0.2;
+      params.snapTime = 0.2;
+      params.hover = false;
+    }
     // progress: the seed is born at screen centre
     // launch:   the seed travels out to its place on the ring
     // spread:   the rest peel off it and the ring draws
@@ -303,6 +316,7 @@ export default function Carousel() {
     // A click is turning the ring to a card. While this is up the momentum
     // above is suspended entirely, so the two cannot both drive spin.
     let picking = false;
+    let frontPlane = 0;
 
     let pointerTravel = 0; // tells a click from a drag
     let travelX = 0;
@@ -350,6 +364,17 @@ export default function Carousel() {
           picking = false;
         },
       });
+    };
+
+    const onKeyDown = (e) => {
+      if (!interactive || e.defaultPrevented) return;
+      if (["INPUT", "TEXTAREA", "SELECT"].includes(e.target?.tagName)) return;
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+
+      e.preventDefault();
+      const count = Math.round(params.count);
+      const direction = e.key === "ArrowRight" ? 1 : -1;
+      pick((frontPlane + direction + count) % count);
     };
 
     /* ------------------------------------------------------------ pointer */
@@ -489,6 +514,7 @@ export default function Carousel() {
     container.addEventListener("pointercancel", onPointerUp);
     container.addEventListener("pointerleave", onPointerLeave);
     container.addEventListener("click", onClick);
+    window.addEventListener("keydown", onKeyDown);
 
     const updatePointer = (dt) => {
       // Held off until the entry finishes, so the cursor cannot soften the
@@ -831,6 +857,7 @@ export default function Carousel() {
       }
 
       over = overI;
+      frontPlane = frontI;
       // Both tests, not either: the width covers a small window on a mouse,
       // `coarse` covers a large tablet. Re-tested every frame so a window
       // dragged across the threshold resolves instead of stranding the tag.
@@ -1283,6 +1310,7 @@ export default function Carousel() {
       container.removeEventListener("pointercancel", onPointerUp);
       container.removeEventListener("pointerleave", onPointerLeave);
       container.removeEventListener("click", onClick);
+      window.removeEventListener("keydown", onKeyDown);
 
       tl?.kill();
       gsap.killTweensOf(splitText.chars);
@@ -1314,7 +1342,21 @@ export default function Carousel() {
       {/* touch-none, or the browser claims the gesture for panning and the
           pointermove stream dies mid-drag. Nothing here scrolls — the swipe
           is the carousel. */}
-      <div ref={containerRef} className="fixed inset-0 touch-none" />
+      <div
+        ref={containerRef}
+        className="fixed inset-0 touch-none"
+        tabIndex={0}
+        aria-label="Interactive photography carousel. Use arrow keys, scroll, or drag to browse."
+      />
+
+      <div className="pointer-events-none fixed left-[5.5vw] top-[2.4vh] z-10 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.16em] text-[#0a0a0a]">
+        <span className="h-1.5 w-1.5 rounded-full bg-[#0a0a0a]" />
+        <span>Photo archive / 2026</span>
+      </div>
+
+      <div className="pointer-events-none fixed bottom-[2.4vh] left-[5.5vw] z-10 font-mono text-[10px] uppercase tracking-[0.14em] text-[#0a0a0a]/55 max-sm:hidden">
+        Scroll / drag to explore
+      </div>
 
       {/* Never takes the pointer: the canvas underneath handles the wheel and
           the drag, and the column has no business interrupting a throw that

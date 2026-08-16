@@ -1,8 +1,8 @@
-# Viscose
+# photo_portpolio
 
-A portfolio carousel rendered as a single WebGL shader. Project cards ride a
-ring that sits mostly off-screen, so you see a tall arc of work sweeping past.
-Scroll, drag or swipe to turn it; it settles with a card facing front.
+A photography portfolio carousel rendered as a single WebGL shader. Project
+cards ride a ring that sits mostly off-screen, so you see a tall arc of visual
+stories sweeping past. Scroll, drag, swipe or use the arrow keys to explore.
 
 _Viscose: a viscous state, and a fibre spun by drawing that state into a
 thread. Which is what the cards do when they pull apart._
@@ -33,8 +33,8 @@ once it moved.
 Requires **Node 20 or newer**.
 
 ```bash
-git clone https://github.com/Yousuf-developer/viscose.git
-cd viscose
+git clone https://github.com/oocheol/photo_portpolio.git
+cd photo_portpolio
 npm install
 npm run dev
 ```

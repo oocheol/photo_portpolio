@@ -1,9 +1,9 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Viscose",
+  title: "photo_portpolio — visual stories",
   description:
-    "A portfolio carousel rendered as a single WebGL shader. Cards ride a ring and stretch into threads as they pull apart.",
+    "A fluid photography portfolio carousel for visual stories, portraits and quiet landscapes.",
 };
 
 export default function RootLayout({ children }) {

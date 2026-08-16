@@ -105,7 +105,7 @@ export function defaultParams() {
     pickEase: "power3.inOut",
 
     // -- the intro heading, in the scene ---------------------------------
-    text: "Works '26",
+    text: "Frames '26",
     textSize: 41,
     textFont: "PP Neue Montreal",
     textWeight: 400,
@@ -184,7 +184,7 @@ export function defaultParams() {
 
     // -- the cursor tag, drawn in the same shader pass --------------------
     tagFrom: 1024, // viewport width it needs; below that there is no cursor
-    tagText: "View",
+    tagText: "Open",
     tagSize: 14,
     tagWeight: 500,
     tagArrow: 14, // px, the svg in /public
