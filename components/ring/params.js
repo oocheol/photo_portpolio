@@ -105,7 +105,7 @@ export function defaultParams() {
     pickEase: "power3.inOut",
 
     // -- the intro heading, in the scene ---------------------------------
-    text: "parang '26",
+    text: "PARANG '26",
     textSize: 41,
     textFont: "PP Neue Montreal",
     textWeight: 400,

@@ -1,7 +1,7 @@
 # JOY Parang
 
 A photography portfolio carousel rendered as a single WebGL shader. The
-JOY Parang presents the `parang` series as a tall arc of visual fragments.
+JOY Parang presents the `PARANG` series as a tall arc of visual fragments.
 Scroll, drag, swipe or use the arrow keys to explore.
 
 _Viscose: a viscous state, and a fibre spun by drawing that state into a
@@ -106,7 +106,7 @@ ref`** button that fixes this in one click.
 Everything lives in one array, `components/ring/projects.js`:
 
 ```js
-{ file: "water-01.webp", name: "parang", type: "Photography", year: "2026" }
+{ file: "parang-01.webp", name: "PARANG", type: "Photography", year: "2026" }
 ```
 
 Drop an image in `public/`, add a row, done. The array does four jobs at once —
