@@ -574,7 +574,7 @@ export default function Carousel() {
 
       if (!launchReady && n >= 100) {
         launchReady = true;
-        touchReadyAt = performance.now() + 1000;
+        touchReadyAt = performance.now() + 4000;
         for (const fn of readyWaiters) fn();
         readyWaiters.length = 0;
       }
