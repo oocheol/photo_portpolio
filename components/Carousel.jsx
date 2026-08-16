@@ -96,11 +96,7 @@ export default function Carousel() {
       console.error("[ring] could not create a WebGL context:", err);
       return;
     }
-    const coarseViewport =
-      window.matchMedia?.("(pointer: coarse)")?.matches ?? false;
-    renderer.setPixelRatio(
-      Math.min(window.devicePixelRatio, coarseViewport ? 1.35 : 2),
-    );
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
@@ -198,6 +194,7 @@ export default function Carousel() {
     // Opened on the frame the counter reads 100, and by nothing else — that is
     // what makes the number landing and the ring launching the same moment.
     let launchReady = false;
+    let touchReadyAt = 0;
     const readyWaiters = [];
     const whenReady = (fn) => (launchReady ? fn() : readyWaiters.push(fn));
 
@@ -436,6 +433,7 @@ export default function Carousel() {
 
     const onPointerDown = (e) => {
       if (!interactive) return;
+      if (e.pointerType === "touch" && performance.now() < touchReadyAt) return;
       pointerTravel = 0;
       travelX = e.clientX;
       travelY = e.clientY;
@@ -455,6 +453,7 @@ export default function Carousel() {
 
     const onPointerMove = (e) => {
       if (!interactive) return;
+      if (e.pointerType === "touch" && performance.now() < touchReadyAt) return;
       trackPointer(e);
 
       // From coordinates, not movementX/Y: those are zero for touch in Safari,
@@ -575,6 +574,7 @@ export default function Carousel() {
 
       if (!launchReady && n >= 100) {
         launchReady = true;
+        touchReadyAt = performance.now() + 1000;
         for (const fn of readyWaiters) fn();
         readyWaiters.length = 0;
       }
