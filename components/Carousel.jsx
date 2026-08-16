@@ -574,7 +574,6 @@ export default function Carousel() {
 
       if (!launchReady && n >= 100) {
         launchReady = true;
-        touchReadyAt = performance.now() + 4000;
         for (const fn of readyWaiters) fn();
         readyWaiters.length = 0;
       }
@@ -1007,6 +1006,7 @@ export default function Carousel() {
     // Bumped per build, so a hold left waiting on a run that has since been
     // replaced cannot resume a timeline nobody is watching.
     let entryGen = 0;
+    let startupTouchGateSet = false;
 
     const build = () => {
       interactive = false;
@@ -1027,6 +1027,13 @@ export default function Carousel() {
         delay: 0.25,
         onComplete: () => {
           interactive = true;
+          if (!startupTouchGateSet) {
+            // The first photo has now finished its entry and come to rest.
+            // Give the mobile browser three quiet seconds before accepting
+            // touch input so the scroll handoff cannot compete with settling.
+            touchReadyAt = performance.now() + 3000;
+            startupTouchGateSet = true;
+          }
         },
       });
 
