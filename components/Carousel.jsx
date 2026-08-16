@@ -96,7 +96,11 @@ export default function Carousel() {
       console.error("[ring] could not create a WebGL context:", err);
       return;
     }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const coarseViewport =
+      window.matchMedia?.("(pointer: coarse)")?.matches ?? false;
+    renderer.setPixelRatio(
+      Math.min(window.devicePixelRatio, coarseViewport ? 1.35 : 2),
+    );
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
@@ -431,11 +435,11 @@ export default function Carousel() {
     };
 
     const onPointerDown = (e) => {
+      if (!interactive) return;
       pointerTravel = 0;
       travelX = e.clientX;
       travelY = e.clientY;
       trackPointer(e);
-      if (!interactive) return;
       stopPick();
       if (coarse) {
         clearTimeout(touchFadeTimer);
@@ -450,6 +454,7 @@ export default function Carousel() {
     };
 
     const onPointerMove = (e) => {
+      if (!interactive) return;
       trackPointer(e);
 
       // From coordinates, not movementX/Y: those are zero for touch in Safari,
@@ -476,6 +481,7 @@ export default function Carousel() {
     };
 
     const onPointerUp = (e) => {
+      if (!interactive || !dragging) return;
       // Releasing the capture fires a leave at the container even though the
       // cursor never went anywhere, so re-track before anything else.
       trackPointer(e);
@@ -486,7 +492,6 @@ export default function Carousel() {
           touchActive = false;
         }, params.touchFade * 1000);
       }
-      if (!dragging) return;
       dragging = false;
       renderer.domElement.releasePointerCapture?.(e.pointerId);
     };
@@ -509,6 +514,17 @@ export default function Carousel() {
     window.addEventListener("keydown", onKeyDown);
 
     const updatePointer = (dt) => {
+      // The entry animation owns the screen until the ring is ready. Avoid
+      // doing pointer smoothing and wake math while mobile browsers are
+      // handling the final touch/scroll handoff.
+      if (!interactive) {
+        cursor.amt = 0;
+        cursor.wake = 0;
+        uniforms.uMouse.value.set(0, 0, 0, 0);
+        uniforms.uMelt.value.set(0, 0, 0, 0);
+        return;
+      }
+
       // Held off until the entry finishes, so the cursor cannot soften the
       // ring while the timeline is still drawing it.
       const live = params.hover && engaged() && pointer.seeded && interactive;
