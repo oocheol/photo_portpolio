@@ -1,5 +1,5 @@
 // Ring order, not filename order. Art is dealt straight down this list, so
-// entry n sits one slot along from n-1 and the column can count 01..24 as the
+// entry n sits one slot along from n-1 and the column can count 01..20 as the
 // carousel turns. Reordering these rows moves the ring, the column and the
 // numbering together; nothing else needs touching.
 //
@@ -24,10 +24,6 @@ export const PROJECTS = [
   { file: "parang-18.webp", name: "PARANG", type: "Photography", year: "2026" },
   { file: "parang-19.webp", name: "PARANG", type: "Photography", year: "2026" },
   { file: "parang-20.webp", name: "PARANG", type: "Photography", year: "2026" },
-  { file: "parang-21.webp", name: "PARANG", type: "Photography", year: "2026" },
-  { file: "parang-22.webp", name: "PARANG", type: "Photography", year: "2026" },
-  { file: "parang-23.webp", name: "PARANG", type: "Photography", year: "2026" },
-  { file: "parang-24.webp", name: "PARANG", type: "Photography", year: "2026" },
 ];
 
 export const IMAGE_FILES = PROJECTS.map((p) => p.file);
