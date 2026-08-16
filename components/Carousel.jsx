@@ -1069,9 +1069,9 @@ export default function Carousel() {
           interactive = true;
           if (!startupTouchGateSet) {
             // The first photo has now finished its entry and come to rest.
-            // Give the mobile browser five quiet seconds before accepting
+            // Give the mobile browser three quiet seconds before accepting
             // touch input so the scroll handoff cannot compete with settling.
-            touchReadyAt = performance.now() + 5000;
+            touchReadyAt = performance.now() + 3000;
             startupTouchGateSet = true;
           }
         },
