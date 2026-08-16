@@ -197,8 +197,7 @@ export function mountGui(GUI, { params, state, info, actions }) {
 
   const pointer = gui.addFolder("pointer");
   pointer.add(params, "hover").name("enabled");
-  pointer.add(params, "touchHold", 0, 1, 0.01).name("touch hold (s)");
-  pointer.add(params, "touchSlop", 0, 60, 1).name("touch hold slop");
+  pointer.add(params, "touchFade", 0, 1, 0.01).name("touch fade (s)");
   pointer.add(params, "lag", 0.02, 1, 0.01).name("cursor chase");
   pointer.add(params, "melt", 0, 200, 0.5);
   pointer.add(params, "meltReach", 0, 900, 5).name("melt reach");

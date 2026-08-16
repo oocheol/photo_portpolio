@@ -392,25 +392,13 @@ export default function Carousel() {
     // Read off the events rather than a media query, so a laptop with a
     // touchscreen behaves as whichever is being used at the time.
     let coarse = false;
-    let held = false;
-    let holdTimer = 0;
+    let touchActive = false;
 
-    const endHold = () => {
-      clearTimeout(holdTimer);
-      holdTimer = 0;
-      held = false;
-    };
-
-    const beginHold = () => {
-      clearTimeout(holdTimer);
-      holdTimer = setTimeout(() => {
-        held = true;
-      }, params.touchHold * 1000);
-    };
-
-    // Mouse: being over it is the whole gesture. Touch: only a press held
-    // still long enough to mean it.
-    const engaged = () => (coarse ? held : pointer.inside);
+    // Mouse: being over it is the whole gesture. Touch: the finger itself is
+    // the cursor, so contact starts the effect immediately and movement feeds
+    // the wake instead of waiting for a long press.
+    const engaged = () => (coarse ? touchActive : pointer.inside);
+    let touchFadeTimer = 0;
 
     const trackPointer = (e) => {
       coarse = e.pointerType === "touch";
@@ -449,7 +437,10 @@ export default function Carousel() {
       trackPointer(e);
       if (!interactive) return;
       stopPick();
-      if (coarse) beginHold();
+      if (coarse) {
+        clearTimeout(touchFadeTimer);
+        touchActive = true;
+      }
       dragging = true;
       settling = false;
       spinVel = 0;
@@ -467,10 +458,6 @@ export default function Carousel() {
         Math.abs(e.clientX - travelX) + Math.abs(e.clientY - travelY);
       travelX = e.clientX;
       travelY = e.clientY;
-      // Only before the hold takes. After that, moving drags the ring and the
-      // melt together, same as a drag with the cursor down.
-      if (coarse && !held && pointerTravel > params.touchSlop) endHold();
-
       if (!dragging) return;
 
       const a = pointerAngle(e);
@@ -493,7 +480,12 @@ export default function Carousel() {
       // cursor never went anywhere, so re-track before anything else.
       trackPointer(e);
       // The finger is gone; a cursor is still there.
-      endHold();
+      if (coarse) {
+        clearTimeout(touchFadeTimer);
+        touchFadeTimer = setTimeout(() => {
+          touchActive = false;
+        }, params.touchFade * 1000);
+      }
       if (!dragging) return;
       dragging = false;
       renderer.domElement.releasePointerCapture?.(e.pointerId);
@@ -540,11 +532,11 @@ export default function Carousel() {
         cursor.x,
         cursor.y,
         cursor.amt,
-        params.melt * fit,
+        params.melt * fit * (coarse ? 1.45 : 1),
       );
       uniforms.uMelt.value.set(
-        params.meltReach * fit,
-        params.wave * fit * cursor.wake * cursor.amt,
+        params.meltReach * fit * (coarse ? 1.2 : 1),
+        params.wave * fit * cursor.wake * cursor.amt * (coarse ? 1.35 : 1),
         params.waveFreq,
         params.waveSpeed,
       );
@@ -932,7 +924,8 @@ export default function Carousel() {
         // to a filament rather than inheriting the unfurl's slab. Taken at the
         // gap's midpoint, so the strongest pull lands between two planes.
         let fl = 0;
-        if (track && params.web > 0.0001) {
+        const webWidth = params.web * (coarse ? 1.7 : 1);
+        if (track && webWidth > 0.0001) {
           const mx = (ca.x + cb.x) * 0.5;
           const my = (ca.y + cb.y) * 0.5;
           const webReach = Math.max(1, params.webReach * W);
@@ -943,7 +936,7 @@ export default function Carousel() {
         // thread would be there before the pull was.
         webF[l] += (fl - webF[l]) * (fl > webF[l] ? kRise : kFall);
 
-        const w = Math.max(Math.pow(1 - v, params.thin), params.web * webF[l]);
+        const w = Math.max(Math.pow(1 - v, params.thin), webWidth * webF[l]);
         // dissolve carries the radius past zero and out of antialiasing range
         // so the thread fades instead of bottoming out as a half-covered
         // hairline. In screen px, so unlike edgeHalf it does not carry g.
@@ -1137,6 +1130,7 @@ export default function Carousel() {
 
     let tl = null;
     const replay = () => {
+      clearTimeout(touchFadeTimer);
       tl?.kill();
       tl = build();
     };
@@ -1298,7 +1292,6 @@ export default function Carousel() {
 
     return () => {
       disposed = true;
-      clearTimeout(holdTimer);
       clearTimeout(fontFallback);
       renderer.setAnimationLoop(null);
 

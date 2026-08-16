@@ -159,8 +159,7 @@ export function defaultParams() {
     // Nothing is drawn at the cursor. It softens the field around itself,
     // leans the nearest planes toward it and strings honey back between them.
     hover: true,
-    touchHold: 0.16, // seconds of near-still press before a finger counts
-    touchSlop: 10, // px of travel inside that window that calls it a swipe
+    touchFade: 0.28, // seconds the touch field lingers after release
     lag: 0.3, // cursor smoothing, per 60fps frame
     melt: 34, // px added to the ring's own blend at the cursor
     meltReach: 260, // px the softening and the wake carry
