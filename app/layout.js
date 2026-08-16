@@ -1,9 +1,9 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "photoprotfolio — water",
+  title: "JOY Parang",
   description:
-    "photoprotfolio presents water, a visual study from a printed photo book.",
+    "JOY Parang presents parang, a visual study from a printed photo book.",
 };
 
 export default function RootLayout({ children }) {

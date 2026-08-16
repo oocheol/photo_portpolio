@@ -1351,7 +1351,7 @@ export default function Carousel() {
 
       <div className="pointer-events-none fixed left-[5.5vw] top-[2.4vh] z-10 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.16em] text-[#0a0a0a]">
         <span className="h-1.5 w-1.5 rounded-full bg-[#0a0a0a]" />
-        <span>photoprotfolio / 2026</span>
+        <span>JOY Parang / 2026</span>
       </div>
 
       <div className="pointer-events-none fixed bottom-[2.4vh] left-[5.5vw] z-10 font-mono text-[10px] uppercase tracking-[0.14em] text-[#0a0a0a]/55 max-sm:hidden">
