@@ -1,9 +1,9 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "photo_portpolio — visual stories",
+  title: "photoprotfolio — water",
   description:
-    "A fluid photography portfolio carousel for visual stories, portraits and quiet landscapes.",
+    "photoprotfolio presents water, a visual study from a printed photo book.",
 };
 
 export default function RootLayout({ children }) {

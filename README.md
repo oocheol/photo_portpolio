@@ -1,8 +1,8 @@
-# photo_portpolio
+# photoprotfolio
 
-A photography portfolio carousel rendered as a single WebGL shader. Project
-cards ride a ring that sits mostly off-screen, so you see a tall arc of visual
-stories sweeping past. Scroll, drag, swipe or use the arrow keys to explore.
+A photography portfolio carousel rendered as a single WebGL shader. The
+photoprotfolio presents the `water` series as a tall arc of visual fragments.
+Scroll, drag, swipe or use the arrow keys to explore.
 
 _Viscose: a viscous state, and a fibre spun by drawing that state into a
 thread. Which is what the cards do when they pull apart._
@@ -106,7 +106,7 @@ ref`** button that fixes this in one click.
 Everything lives in one array, `components/ring/projects.js`:
 
 ```js
-{ file: "10.webp", name: "Matchday", type: "Motion", year: "2025" }
+{ file: "water-01.webp", name: "water", type: "Photography", year: "2026" }
 ```
 
 Drop an image in `public/`, add a row, done. The array does four jobs at once —

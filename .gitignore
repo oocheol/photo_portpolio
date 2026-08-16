@@ -39,6 +39,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local PDF inspection renders and Codex screenshots
+/tmp/
+Codex *.png
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

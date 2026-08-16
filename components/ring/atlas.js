@@ -1,9 +1,9 @@
 import * as THREE from "three";
 import { IMAGE_FILES } from "./projects";
 
-// Cell aspect matches the plane's 1.5 : 1 so nothing is distorted.
+// Cell aspect matches the square source photos so nothing is distorted.
 const CELL_W = 512;
-const CELL_H = Math.round(CELL_W / 1.5);
+const CELL_H = CELL_W;
 
 const load = (src, priority) =>
   new Promise((resolve, reject) => {

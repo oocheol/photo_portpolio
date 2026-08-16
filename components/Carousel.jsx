@@ -654,7 +654,7 @@ export default function Carousel() {
       // Anything measured in plane long edges — hover reach, thread reach,
       // side falloff — comes off W, so the narrow bump reaches them for free.
       const W = params.planeSize * planeK * g;
-      const H = W / 1.5;
+      const H = W;
       uniforms.uSize.value.set(W, H);
       // Tracks the plane, not the window: a card 25% bigger with the same
       // corner is a differently shaped card, not a bigger one.
@@ -1351,7 +1351,7 @@ export default function Carousel() {
 
       <div className="pointer-events-none fixed left-[5.5vw] top-[2.4vh] z-10 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.16em] text-[#0a0a0a]">
         <span className="h-1.5 w-1.5 rounded-full bg-[#0a0a0a]" />
-        <span>Photo archive / 2026</span>
+        <span>photoprotfolio / 2026</span>
       </div>
 
       <div className="pointer-events-none fixed bottom-[2.4vh] left-[5.5vw] z-10 font-mono text-[10px] uppercase tracking-[0.14em] text-[#0a0a0a]/55 max-sm:hidden">

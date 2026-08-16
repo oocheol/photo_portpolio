@@ -56,7 +56,7 @@ export function defaultParams() {
     tightMetaWidth: 70, // vw of box, and so of filter region, around it
 
     // -- geometry, all at the reference window ---------------------------
-    planeSize: 90, // long edge in px; aspect locked at 1.5 : 1
+    planeSize: 90, // square photo edge in px; aspect locked at 1 : 1
     count: PROJECTS.length, // one plane per project, so the deal comes out even
     ringRadius: 340,
     seed: 0, // where plane 0 sits, degrees (0 = 3 o'clock)
@@ -105,7 +105,7 @@ export function defaultParams() {
     pickEase: "power3.inOut",
 
     // -- the intro heading, in the scene ---------------------------------
-    text: "Frames '26",
+    text: "water '26",
     textSize: 41,
     textFont: "PP Neue Montreal",
     textWeight: 400,
